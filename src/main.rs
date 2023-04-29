@@ -12,10 +12,11 @@ fn main() {
     let board = Board::new(size, pieces);
 
     println!("Initial:\n{board}\nDerived:");
-
     let mut graph = Graph::new(board);
 
     for i in graph.derive_node(0) {
         println!("{}", graph.nodes[i].board)
     }
+
+    println!("Final board:\n{}", board::final_board(&graph[0].board));
 }

@@ -30,6 +30,19 @@ pub struct Graph {
     pub nodes: Vec<Node>,
 }
 
+impl std::ops::Index<usize> for Graph {
+    type Output = Node;
+
+    fn index(&self, i: usize) -> &Self::Output {
+        &self.nodes[i]
+    }
+}
+impl std::ops::IndexMut<usize> for Graph {
+    fn index_mut(&mut self, i: usize) -> & mut Self::Output {
+        &mut self.nodes[i]
+    }
+}
+
 impl Graph {
 
     pub fn new(board: Board) -> Graph {

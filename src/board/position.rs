@@ -18,9 +18,6 @@ impl ops::Add<Vector2D> for Position {
     type Output = Self;
 
     fn add(self, other: Vector2D) -> Self {
-        // if other.x < self.x as i64 || other.y < self.y as i64 {
-        //     panic!("You are trying to make a negative Position Pos = {:?}, Vec = {:?}", self, other);
-        // }
         Self {x: (self.x as i64 + other.x) as usize, y: (self.y as i64 + other.y) as usize}
     }
 }
