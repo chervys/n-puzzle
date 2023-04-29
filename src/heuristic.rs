@@ -1,10 +1,8 @@
 
-use board::Board;
-use piece::Piece;
-use position::Position;
+use crate::board::Board;
+use crate::board::piece::Piece;
+// use crate::board::position::Position;
 
 pub fn manatthan_distance(current_board: &Board, final_board: &Board) -> usize {
-    for piece in current_board.value {
-        
-    }
+    0
 }

@@ -1,25 +1,21 @@
 mod board;
+mod heuristic;
+mod graph;
 
 use board::Board;
 use board::piece::Piece;
+use graph::Graph;
+use graph::Node;
 fn main() {
-    let mut board = Board {
-        value: Vec::new(),
-        size: 3,
-    };
-    board.value.push(Piece { id: 4 });
-    board.value.push(Piece { id: 1 });
-    board.value.push(Piece { id: 2 });
-    board.value.push(Piece { id: 3 });
-    board.value.push(Piece { id: 0 });
-    board.value.push(Piece { id: 5 });
-    board.value.push(Piece { id: 6 });
-    board.value.push(Piece { id: 7 });
-    board.value.push(Piece { id: 8 });
+    let pieces = vec![4, 1, 5, 3, 0, 6, 2, 8, 7];
+    let size = 3;
+    let board = Board::new(size, pieces);
 
-    println!("Starting board :\n{board}");
+    println!("Initial:\n{board}\nDerived:");
 
-    for (index, board) in board.derive().iter().enumerate() {
-        println!("Derived board {index} :\n{board}");
+    let mut graph = Graph::new(board);
+
+    for i in graph.derive_node(0) {
+        println!("{}", graph.nodes[i].board)
     }
 }
