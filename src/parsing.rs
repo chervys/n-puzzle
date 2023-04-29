@@ -1,4 +1,3 @@
-use std::env;
 use std::fs::File;
 use std::io::prelude::Read;
 
@@ -57,7 +56,7 @@ fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
 	true
 }
 
-fn parsing(path: String) -> std::io::Result<()> {
+pub fn parsing(path: String) -> std::io::Result<(usize, Vec<usize>)> {
 	let mut content: String = String::new();
 	read_file(path, &mut content)?;
 
@@ -65,21 +64,9 @@ fn parsing(path: String) -> std::io::Result<()> {
 	_puzzle = _extract_puzzle(content);
 
 	let mut _is_valid: bool = is_valid_puzzle(&_puzzle);
+	if _is_valid == false {
+		panic!("Parsing: Invalid.");
+	}
 
-    Ok(())
+	Ok((_puzzle[0], _puzzle[1..].to_vec()))
 }
-
-//fn main() {
-//	let args: Vec<String> = env::args().collect();
-//	
-//	if args.len() != 2 {
-//		panic!("Invalid args.");
-//	}
-//
-//	let path: String = args[1].clone();
-//
-//	match parsing(path) {
-//		Ok(_) => {},
-//		Err(err) => eprintln!("{err}"),
-//	}
-//}
