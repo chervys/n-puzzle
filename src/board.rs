@@ -1,11 +1,10 @@
 pub mod piece;
-mod position;
+pub mod position;
 
 use piece::Piece;
 use position::Position;
 use position::Vector2D;
 use std::fmt;
-use std::fmt::Display;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Board {
@@ -65,7 +64,7 @@ impl Board {
         position.x + position.y * size
     }
 
-    pub fn index_to_position(&self, index: usize) -> Position {
+    pub fn _index_to_position(&self, index: usize) -> Position {
         Position {
             x: index % self.size,
             y: index / self.size,
@@ -169,7 +168,7 @@ pub fn final_board(board: &Board) -> Board {
         final_board[cursor] = Piece{id: 1};
         for i in 2..(board.size * board.size) {
             if final_board.out_of_bound(cursor + direction) || final_board.assigned(cursor + direction) {
-                direction.rotate_right(); // rotate cursor
+                direction._rotate_right(); // rotate cursor
             }
             cursor = cursor + direction; // move cursor
             final_board[cursor] = Piece{id: i};

@@ -37,18 +37,14 @@ pub struct Vector2D {
 }
 
 impl Vector2D {
-    pub fn rotate_right(& mut self) {
-        let mut z = 0;
-
-        z = self.x;
+    pub fn _rotate_right(& mut self) {
+        let z = self.x;
         self.x = - self.y;
         self.y = z;
     }
 
-    pub fn rotate_left(& mut self) {
-        let mut z = 0;
-
-        z = self.y;
+    pub fn _rotate_left(& mut self) {
+        let z = self.y;
         self.y = - self.x;
         self.x = z;
     }
