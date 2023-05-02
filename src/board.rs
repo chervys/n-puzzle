@@ -80,6 +80,13 @@ impl Board {
         None
     }
 
+    pub fn id_to_position(&self, id:usize) -> Option<Position> {
+        match self.value.iter().position(|e| e.id == id) {
+            Some(index) => Some(self._index_to_position(index)),
+            None => None,
+        }
+    }
+
     fn move_piece(&mut self, piece_index: usize, hole_index: usize) {
         self.value.swap(piece_index, hole_index);
     }

@@ -46,7 +46,7 @@ fn main() {
 	//let c: Board = board.clone();
 	let f: Board = board::final_board(&graph[0].board).clone();
 	println!("{}", _manatthan_distance(
-		&c, &f
+		&c, &c
 	));
 
 }
