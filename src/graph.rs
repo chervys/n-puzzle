@@ -84,14 +84,14 @@ impl Graph {
     }
 }
 
-// mod board;
-// mod heuristic;
-// mod graph;
+mod board;
+mod heuristic;
+mod graph;
 
-// use board::Board;
-// use board::piece::Piece;
-// use graph::Graph;
-// use graph::Node;
+use board::Board;
+use board::piece::Piece;
+use graph::Graph;
+use graph::Node;
 // fn main() {
 //     let pieces = vec![4, 1, 5, 3, 0, 6, 2, 8, 7];
 //     let size = 3;

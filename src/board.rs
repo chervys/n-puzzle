@@ -57,15 +57,22 @@ impl Board {
         board
     }
 
-    pub fn position_to_index(&self, position: Position) -> usize {
+    pub fn id_to_position(&self, id:usize) -> Option<Position> {
+        match self.position(|e| e.id == id) {
+            Some(index) => self.index_to_postion(index),
+            None => None,
+        }
+    }
+
+    fn position_to_index(&self, position: Position) -> usize {
         position.x + position.y * self.size
     }
 
-    pub fn position_to_index_from_size(size: usize, position: Position) -> usize {
+    fn position_to_index_from_size(size: usize, position: Position) -> usize {
         position.x + position.y * size
     }
 
-    pub fn index_to_position(&self, index: usize) -> Position {
+    fn index_to_position(&self, index: usize) -> Position {
         Position {
             x: index % self.size,
             y: index / self.size,
