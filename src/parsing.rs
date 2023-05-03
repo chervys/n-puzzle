@@ -1,6 +1,4 @@
-use std::env;
-use std::fs::File;
-use std::io::prelude::Read;
+use std::{fs::File, io::Read};
 
 fn read_file(path: String, buffer: &mut String) -> std::io::Result<()> {
 	let mut file: File = File::open(path).expect("Open file.");
@@ -10,24 +8,24 @@ fn read_file(path: String, buffer: &mut String) -> std::io::Result<()> {
 
 fn _extract_puzzle(buffer: String) -> Vec<usize> {
 	let mut puzzle: Vec<usize> = Vec::new();
-	let mut tmp : String = String::new();
+	let mut piece : String = String::new();
 
 	for line in buffer.lines() {
 		for c in line.chars() {
-			if !tmp.is_empty() && !c.is_ascii_digit() {
-				puzzle.push(tmp.parse().expect("String to usize"));
-				tmp.clear();
+			if !piece.is_empty() && !c.is_ascii_digit() {
+				puzzle.push(piece.parse().expect("String to usize"));
+				piece.clear();
 			}
 			match c {
-				c if c.is_ascii_digit() => tmp.push(c),
+				c if c.is_ascii_digit() => piece.push(c),
 				c if c.is_whitespace() => continue,
 				'#' => break,
 				_ => panic!("Parsing: Invalid char."),
 			}
 		}
-		if !tmp.is_empty() {
-			puzzle.push(tmp.parse().expect("String to usize"));
-			tmp.clear();
+		if !piece.is_empty() {
+			puzzle.push(piece.parse().expect("String to usize"));
+			piece.clear();
 		}
 	}
 	puzzle
@@ -44,42 +42,27 @@ fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
 		return false;
 	}
 
-	let mut board = puzzle[1..].to_vec();
-	board.sort();
+	let mut pieces = puzzle[1..].to_vec();
+	pieces.sort();
 
-	for (index, value) in board.iter().enumerate() {
+	for (index, value) in pieces.iter().enumerate() {
 		if index != *value {
 			return false;
 		}
 	}
-
-	dbg!(board);
+	
 	true
 }
 
-fn parsing(path: String) -> std::io::Result<()> {
-	let mut content: String = String::new();
-	read_file(path, &mut content)?;
+pub fn parsing(path: String) -> std::io::Result<(usize, Vec<usize>)> {
+	let mut buffer: String = String::new();
+	read_file(path, &mut buffer)?;
 
-	let mut _puzzle: Vec<usize> = Vec::new();
-	_puzzle = _extract_puzzle(content);
+	let _puzzle: Vec<usize> = _extract_puzzle(buffer);
 
-	let mut _is_valid: bool = is_valid_puzzle(&_puzzle);
+	if !is_valid_puzzle(&_puzzle) {
+		panic!("Parsing: Invalid.");
+	}
 
-    Ok(())
+	Ok((_puzzle[0], _puzzle[1..].to_vec()))
 }
-
-//fn main() {
-//	let args: Vec<String> = env::args().collect();
-//	
-//	if args.len() != 2 {
-//		panic!("Invalid args.");
-//	}
-//
-//	let path: String = args[1].clone();
-//
-//	match parsing(path) {
-//		Ok(_) => {},
-//		Err(err) => eprintln!("{err}"),
-//	}
-//}
