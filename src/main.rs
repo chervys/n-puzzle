@@ -8,7 +8,7 @@ mod graph;
 use board::Board;
 use graph::Graph;
 
-use crate::{heuristic::{_manatthan_distance, _manatthan_distance_for_piece}, board::position::Position};
+use crate::heuristic::_manatthan_distance;
 
 fn main() {
 	let args: Vec<String> = env::args().collect();
@@ -30,23 +30,22 @@ fn main() {
 		},
 		Err(err) => eprintln!("{err}"),
 	}
-	let board = Board::new(size, pieces);
 
-	println!("Initial:\n{board}");
-	let c: Board = board.clone();
-	
-	//println!("Derived:\n");
-	let mut graph = Graph::new(board.clone());
-	for _i in graph.derive_node(0) {
-		//println!("{}", graph.nodes[_i].board)
-	}
+	let initial_board = Board::new(size, pieces);
+	let graph = Graph::new(initial_board.clone());
+	let final_board = board::final_board(&graph.nodes[0].board);
 
-	println!("Final board:\n{}", board::final_board(&graph[0].board));
+	let current_board = graph.nodes[0].board.clone();
 
-	//let c: Board = board.clone();
-	let f: Board = board::final_board(&graph[0].board).clone();
-	println!("{}", _manatthan_distance(
-		&c, &c
-	));
+	println!("initial_board:");
+	println!("{}", initial_board);
+
+	println!("final_board:");
+	println!("{}", final_board);
+
+	println!("current_board:");
+	println!("{}", current_board);
+
+	println!("{}", _manatthan_distance(&initial_board, &final_board));
 
 }
