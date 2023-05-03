@@ -1,5 +1,8 @@
 # system
 .DS_Store
 
+# editor 
+.vscode
+
 # rust
 /target
