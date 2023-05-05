@@ -29,7 +29,7 @@ fn main() {
 			println!("current_board:");
 			println!("{}", current_board);
 
-			println!("{}", heuristic::manatthan_distance(&initial_board, &final_board));
+			//println!("{}", heuristic::manatthan_distance(&initial_board, &final_board));
 
 			println!("{:?}", a_star::a_star(initial_board));
 		},

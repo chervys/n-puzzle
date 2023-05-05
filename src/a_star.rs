@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::{cmp::Ordering, collections::BTreeMap};
 use std::collections::BinaryHeap;
 use crate::{board::Board, heuristic, board};
 
@@ -14,8 +14,8 @@ pub struct Path {
 impl Ord for Path {
     fn cmp(&self, other: &Self) -> Ordering {
         other.cost.cmp(&self.cost)
-            .then_with(|| self.heuristic.cmp(&other.heuristic))
             .then_with(|| self.distance.cmp(&other.distance))
+            .then_with(|| self.heuristic.cmp(&other.heuristic))
     }
 }
 
@@ -24,14 +24,6 @@ impl PartialOrd for Path {
         Some(self.cmp(other))
     }
 }
-
-
-fn get_next_boards(board: Board ) -> Vec<Board> {    
-    let next_boards: Vec<Board> = Vec::new();
-
-    next_boards
-}
-
 
 pub fn a_star(initial_board: Board) {
     let final_board: Board = board::final_board(&initial_board);
@@ -49,8 +41,51 @@ pub fn a_star(initial_board: Board) {
         }
     );
 
+	let mut _backup: BTreeMap<String, usize> = BTreeMap::new();
+
     while let Some(path) = paths.pop() {
-        let _boards: Vec<Board> = get_next_boards(path.board);
+	   println!("{} {}", paths.len(), _backup.len());
+
+        if path.heuristic == 0 {
+            println!("F({}) = G({}) + H({})", path.cost, path.distance, path.heuristic);
+            println!("{:?}", path.edges);
+            println!("{}", path.board);
+            return;
+        }
+
+        let new_boards: Vec<Board> = path.board._derive();
+
+        for current_board in new_boards {
+
+            let new_distance = path.distance + 1;
+            let new_heuristic = heuristic::manatthan_distance(&current_board, &final_board);
+            let new_cost = 2 * new_distance + new_heuristic;
+
+			let hash: String = current_board.get_hash();
+			match _backup.get(&hash) {
+				Some(_a) => {
+					if _a <= &new_cost {
+						_backup.insert(hash, new_cost);
+					}
+					else {
+						break;
+					}
+				}
+				None => {
+					_backup.insert(hash, new_cost);
+				}
+			}
+
+			paths.push(
+				Path {
+                    board: current_board,
+                    edges: path.edges.clone(),
+                    distance: new_distance,
+                    heuristic: new_heuristic,
+                    cost: new_cost,
+                }
+            )
+        }
     }
 
 }

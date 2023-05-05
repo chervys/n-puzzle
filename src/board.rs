@@ -56,6 +56,15 @@ impl Board {
         board
     }
 
+    pub fn get_hash(&self) -> String {
+        let mut hash: String = String::new();
+        for x in &self.value {
+            let tmp = x.id.to_string();
+            hash.push_str(&tmp);
+        }
+        hash
+    }
+
     pub fn position_to_index(&self, position: Position) -> usize {
         position.x + position.y * self.size
     }
@@ -95,7 +104,7 @@ impl Board {
         let mut adjacent = Vec::new();
         let size = self.size;
 
-        if index + size <= size * size { //bottom
+        if index + size < size * size { //bottom
             adjacent.push(index + size);
         }
         if index >= size { //top
