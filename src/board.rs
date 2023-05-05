@@ -1,26 +1,24 @@
-pub mod piece;
 pub mod position;
 
-use piece::Piece;
 use position::Position;
 use position::Vector2D;
 use std::fmt;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Board {
-    pub value: Vec<Piece>,
     pub size: usize,
+    pub value: Vec<usize>,
 }
 
 impl std::ops::Index<usize> for Board {
-    type Output = Piece;
+    type Output = usize;
 
     fn index(&self, i: usize) -> &Self::Output {
         &self.value[i]
     }
 }
 impl std::ops::Index<Position> for Board {
-    type Output = Piece;
+    type Output = usize;
 
     fn index(&self, i: Position) -> &Self::Output {
         &self.value[self.position_to_index(i)]
@@ -50,10 +48,19 @@ impl Board {
         };
 
         for piece in pieces {
-            board.value.push(Piece { id: piece })
+            board.value.push(piece)
         }
 
         board
+    }
+
+    pub fn get_hash(&self) -> String {
+        let mut hash: String = String::new();
+        for x in &self.value {
+            let tmp = x.to_string();
+            hash.push_str(&tmp);
+        }
+        hash
     }
 
     pub fn position_to_index(&self, position: Position) -> usize {
@@ -71,31 +78,28 @@ impl Board {
         }
     }
 
-    pub fn find_id(&self, id: usize) -> Option<(&Piece, usize)> {
+    pub fn _find_id(&self, id: usize) -> Option<(usize, usize)> {
         for (index, piece) in self.value.iter().enumerate() {
-            if id == piece.id {
-                return Some((piece, index));
+            if id == *piece {
+                return Some((*piece, index));
             }
         }
         None
     }
 
     pub fn id_to_position(&self, id:usize) -> Option<Position> {
-        match self.value.iter().position(|e| e.id == id) {
-            Some(index) => Some(self._index_to_position(index)),
-            None => None,
-        }
+        self.value.iter().position(|e| *e == id).map(|index| self._index_to_position(index))
     }
 
-    fn move_piece(&mut self, piece_index: usize, hole_index: usize) {
+    fn _move_piece(&mut self, piece_index: usize, hole_index: usize) {
         self.value.swap(piece_index, hole_index);
     }
 
-    fn find_adjacent_index(&self, index: usize) -> Vec<usize> {
+    fn _find_adjacent_index(&self, index: usize) -> Vec<usize> {
         let mut adjacent = Vec::new();
         let size = self.size;
 
-        if index + size <= size * size { //bottom
+        if index + size < size * size { //bottom
             adjacent.push(index + size);
         }
         if index >= size { //top
@@ -110,14 +114,14 @@ impl Board {
         adjacent
     }
 
-    pub fn derive(&self) -> Vec<Board> {
-        let (_, hole_index) = self.find_id(0).expect("Missing hole");
+    pub fn _derive(&self) -> Vec<Board> {
+        let (_, hole_index) = self._find_id(0).expect("Missing hole");
         let mut derived = Vec::new();
-        let adjacent_piece = self.find_adjacent_index(hole_index);
+        let adjacent_piece = self._find_adjacent_index(hole_index);
 
         for adjacent_index in adjacent_piece.iter(){
             let mut new_board = self.clone();
-            new_board.move_piece(*adjacent_index, hole_index);
+            new_board._move_piece(*adjacent_index, hole_index);
             derived.push(new_board);
         }
         derived
@@ -131,7 +135,7 @@ impl Board {
     }
 
     pub fn assigned(&self, position: Position) -> bool {
-        if self.value[self.position_to_index(position)].id != 0 {
+        if self.value[self.position_to_index(position)] != 0 {
             return true
         }
         false
@@ -158,9 +162,7 @@ pub fn blank_board(size: usize) -> Board {
     };
 
     for _ in 0..size * size {
-        board.value.push(Piece{
-            id: 0,
-        })
+        board.value.push(0)
     }
 
     board
@@ -172,13 +174,13 @@ pub fn final_board(board: &Board) -> Board {
     let mut final_board = blank_board(board.size);
 
     if board.size >= 1 {
-        final_board[cursor] = Piece{id: 1};
+        final_board[cursor] = 1;
         for i in 2..(board.size * board.size) {
             if final_board.out_of_bound(cursor + direction) || final_board.assigned(cursor + direction) {
                 direction._rotate_right(); // rotate cursor
             }
             cursor = cursor + direction; // move cursor
-            final_board[cursor] = Piece{id: i};
+            final_board[cursor] = i;
         }
     }
 
@@ -187,7 +189,8 @@ pub fn final_board(board: &Board) -> Board {
 
 #[cfg(test)]
 mod tests {
-    use crate::Board;
+    use crate::board::Board;
+
     #[test]
     fn new() {
         let pieces = vec![4, 1, 5, 3, 0, 6, 2, 8, 7];
@@ -196,8 +199,8 @@ mod tests {
         #[cfg(debug_assertions)]
         let board = Board::new(size, pieces);
 
-        assert_eq!(board[0].id, 4);
-        assert_eq!(board[8].id, 7);
+        assert_eq!(board[0], 4);
+        assert_eq!(board[8], 7);
         assert_eq!(board.size, 3);
     }
 }
