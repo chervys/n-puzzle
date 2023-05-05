@@ -12,14 +12,14 @@ impl Node {
         Self { board, edges: Vec::new(), parent: usize::MAX }
     }
 
-    pub fn add_edge(&mut self, index: usize) {
+    pub fn _add_edge(&mut self, index: usize) {
         self.edges.push(index);
     }
 
-    pub fn derive_node(&mut self, parent: usize) -> Vec<Node> {
+    pub fn _derive_node(&mut self, parent: usize) -> Vec<Node> {
         let mut new_nodes = Vec::new();
 
-        for board in self.board.derive() {
+        for board in self.board._derive() {
             new_nodes.push(Node{ board, edges:Vec::new(), parent });
         }
         new_nodes
@@ -59,7 +59,7 @@ impl Graph {
         index
     }
 
-    pub fn add_nodes(&mut self, nodes: Vec<Node>) -> Vec<usize> {
+    pub fn _add_nodes(&mut self, nodes: Vec<Node>) -> Vec<usize> {
         let mut index = Vec::new();
         for node in nodes {
             index.push(self.nodes.len());
@@ -68,19 +68,19 @@ impl Graph {
         index
     }
 
-    pub fn derive_node(&mut self, node_index: usize) -> Vec<usize> {
-        let new_nodes = self.nodes[node_index].derive_node(node_index);
-        let new_edges = self.add_nodes(new_nodes);
+    pub fn _derive_node(&mut self, node_index: usize) -> Vec<usize> {
+        let new_nodes = self.nodes[node_index]._derive_node(node_index);
+        let new_edges = self._add_nodes(new_nodes);
 
         for edge in &new_edges {
-            self.add_edge(node_index, *edge);
+            self._add_edge(node_index, *edge);
         }
 
         new_edges
     }
 
-    pub fn add_edge(&mut self, source: usize, target: usize) {
-        self.nodes[source].add_edge(target);
+    pub fn _add_edge(&mut self, source: usize, target: usize) {
+        self.nodes[source]._add_edge(target);
     }
 }
 

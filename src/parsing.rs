@@ -1,6 +1,6 @@
 use std::{fs::File, io::Read};
 
-fn read_file(path: String, buffer: &mut String) -> std::io::Result<()> {
+fn read_file(path: &String, buffer: &mut String) -> std::io::Result<()> {
 	let mut file: File = File::open(path).expect("Open file.");
 	file.read_to_string(buffer).expect("Read to string.");
 	Ok(())
@@ -33,7 +33,7 @@ fn _extract_puzzle(buffer: String) -> Vec<usize> {
 
 fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
 	let len: usize = puzzle.len();
-	if len < 5 {
+	if len < (1 + (2 * 2)) {
 		return false;
 	}
 
@@ -42,9 +42,8 @@ fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
 		return false;
 	}
 
-	let mut pieces = puzzle[1..].to_vec();
+	let mut pieces: Vec<usize> = puzzle[1..].to_vec();
 	pieces.sort();
-
 	for (index, value) in pieces.iter().enumerate() {
 		if index != *value {
 			return false;
@@ -54,7 +53,7 @@ fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
 	true
 }
 
-pub fn parsing(path: String) -> std::io::Result<(usize, Vec<usize>)> {
+pub fn parsing(path: &String) -> std::io::Result<(usize, Vec<usize>)> {
 	let mut buffer: String = String::new();
 	read_file(path, &mut buffer)?;
 

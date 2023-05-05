@@ -8,8 +8,8 @@ use std::fmt;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Board {
-    pub value: Vec<Piece>,
     pub size: usize,
+    pub value: Vec<Piece>,
 }
 
 impl std::ops::Index<usize> for Board {
@@ -71,7 +71,7 @@ impl Board {
         }
     }
 
-    pub fn find_id(&self, id: usize) -> Option<(&Piece, usize)> {
+    pub fn _find_id(&self, id: usize) -> Option<(&Piece, usize)> {
         for (index, piece) in self.value.iter().enumerate() {
             if id == piece.id {
                 return Some((piece, index));
@@ -87,11 +87,11 @@ impl Board {
         }
     }
 
-    fn move_piece(&mut self, piece_index: usize, hole_index: usize) {
+    fn _move_piece(&mut self, piece_index: usize, hole_index: usize) {
         self.value.swap(piece_index, hole_index);
     }
 
-    fn find_adjacent_index(&self, index: usize) -> Vec<usize> {
+    fn _find_adjacent_index(&self, index: usize) -> Vec<usize> {
         let mut adjacent = Vec::new();
         let size = self.size;
 
@@ -110,14 +110,14 @@ impl Board {
         adjacent
     }
 
-    pub fn derive(&self) -> Vec<Board> {
-        let (_, hole_index) = self.find_id(0).expect("Missing hole");
+    pub fn _derive(&self) -> Vec<Board> {
+        let (_, hole_index) = self._find_id(0).expect("Missing hole");
         let mut derived = Vec::new();
-        let adjacent_piece = self.find_adjacent_index(hole_index);
+        let adjacent_piece = self._find_adjacent_index(hole_index);
 
         for adjacent_index in adjacent_piece.iter(){
             let mut new_board = self.clone();
-            new_board.move_piece(*adjacent_index, hole_index);
+            new_board._move_piece(*adjacent_index, hole_index);
             derived.push(new_board);
         }
         derived
@@ -187,7 +187,8 @@ pub fn final_board(board: &Board) -> Board {
 
 #[cfg(test)]
 mod tests {
-    use crate::Board;
+    use crate::board::Board;
+
     #[test]
     fn new() {
         let pieces = vec![4, 1, 5, 3, 0, 6, 2, 8, 7];
