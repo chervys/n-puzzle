@@ -33,7 +33,7 @@ pub fn a_star(initial_board: Board) {
     let h: usize = heuristic::manatthan_distance(&initial_board, &final_board);
     paths.push(
         Path {
-            board: initial_board,
+            board: initial_board.clone(),
             edges: Vec::new(),
             distance: 0,
             heuristic: h,
@@ -42,6 +42,16 @@ pub fn a_star(initial_board: Board) {
     );
 
 	let mut _backup: BTreeMap<String, usize> = BTreeMap::new();
+
+	let hash: String = initial_board.get_hash();
+			match _backup.get(&hash) {
+				Some(_a) => {
+					
+				}
+				None => {
+					_backup.insert(hash, h);
+				}
+			}
 
     while let Some(path) = paths.pop() {
 	   println!("{} {}", paths.len(), _backup.len());
@@ -59,17 +69,12 @@ pub fn a_star(initial_board: Board) {
 
             let new_distance = path.distance + 1;
             let new_heuristic = heuristic::manatthan_distance(&current_board, &final_board);
-            let new_cost = 2 * new_distance + new_heuristic;
+            let new_cost = new_distance + new_heuristic;
 
 			let hash: String = current_board.get_hash();
 			match _backup.get(&hash) {
 				Some(_a) => {
-					if _a <= &new_cost {
-						_backup.insert(hash, new_cost);
-					}
-					else {
-						break;
-					}
+					continue;
 				}
 				None => {
 					_backup.insert(hash, new_cost);
