@@ -1,6 +1,5 @@
 mod parsing;
 mod board;
-mod graph;
 mod heuristic;
 mod a_star;
 
@@ -15,19 +14,13 @@ fn main() {
 	match parsing::parsing(&args[1]) {
 		Ok((size, pieces)) => {
 			let initial_board = board::Board::new(size, pieces);
-			let graph = graph::Graph::new(initial_board.clone());
-			let final_board = board::final_board(&graph.nodes[0].board);
-
-			let current_board = graph.nodes[0].board.clone();
+			let final_board = board::final_board(&initial_board);
 
 			println!("initial_board:");
 			println!("{}", initial_board);
 
 			println!("final_board:");
 			println!("{}", final_board);
-
-			println!("current_board:");
-			println!("{}", current_board);
 
 			//println!("{}", heuristic::manatthan_distance(&initial_board, &final_board));
 
