@@ -54,7 +54,6 @@ pub fn a_star(initial_board: Board) {
 			}
 
     while let Some(path) = paths.pop() {
-	   println!("{} {}", paths.len(), _backup.len());
 
         if path.heuristic == 0 {
             println!("F({}) = G({}) + H({})", path.cost, path.distance, path.heuristic);
@@ -92,5 +91,5 @@ pub fn a_star(initial_board: Board) {
             )
         }
     }
-
+    println!("No soluce")
 }
