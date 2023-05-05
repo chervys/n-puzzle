@@ -46,35 +46,48 @@ pub fn a_star(initial_board: Board) {
 	let hash: String = initial_board.get_hash();
 			match _backup.get(&hash) {
 				Some(_a) => {
-					
+					if _a > &h {
+						_backup.insert(hash, h);
+					}
 				}
 				None => {
 					_backup.insert(hash, h);
 				}
 			}
 
-    while let Some(path) = paths.pop() {
-	   println!("{} {}", paths.len(), _backup.len());
+	let myMax = initial_board.size * initial_board.size * (initial_board.size - 1);
 
-        if path.heuristic == 0 {
-            println!("F({}) = G({}) + H({})", path.cost, path.distance, path.heuristic);
-            println!("{:?}", path.edges);
-            println!("{}", path.board);
-            return;
-        }
+    while let Some(path) = paths.pop() {
+	   //println!("{} {}", paths.len(), _backup.len());
+
+        //if path.heuristic == 0 {
+        //    println!("F({}) = G({}) + H({})", path.cost, path.distance, path.heuristic);
+        //    println!("{:?}", path.edges);
+        //    println!("{}", path.board);
+        //    return;
+        //}
 
         let new_boards: Vec<Board> = path.board._derive();
 
         for current_board in new_boards {
 
             let new_distance = path.distance + 1;
+			if myMax < new_distance {
+				continue;
+			}
+
             let new_heuristic = heuristic::manatthan_distance(&current_board, &final_board);
             let new_cost = new_distance + new_heuristic;
 
 			let hash: String = current_board.get_hash();
 			match _backup.get(&hash) {
 				Some(_a) => {
-					continue;
+					if *_a > new_cost {
+						_backup.insert(hash, new_cost);
+					}
+					else {
+						continue;
+					}
 				}
 				None => {
 					_backup.insert(hash, new_cost);
