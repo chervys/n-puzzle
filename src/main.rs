@@ -20,16 +20,16 @@ fn main() {
 
 			let current_board = graph.nodes[0].board.clone();
 
-			println!("initial_board:");
-			println!("{}", initial_board);
+			//println!("initial_board:");
+			//println!("{}", initial_board);
+//
+			//println!("final_board:");
+			//println!("{}", final_board);
+//
+			//println!("current_board:");
+			//println!("{}", current_board);
 
-			println!("final_board:");
-			println!("{}", final_board);
-
-			println!("current_board:");
-			println!("{}", current_board);
-
-			//println!("{}", heuristic::manatthan_distance(&initial_board, &final_board));
+			println!("{}", heuristic::manatthan_distance(&initial_board, &final_board));
 
 			println!("{:?}", a_star::a_star(initial_board));
 		},
