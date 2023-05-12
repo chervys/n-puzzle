@@ -12,7 +12,6 @@ pub fn manatthan_distance(current_board: &Board, final_board: &Board) -> usize {
     for id in 0..(current_board.size * current_board.size) {
         if let (Some(a), Some(b)) = (current_board.id_to_position(id), final_board.id_to_position(id)) {
             length_of_road += manatthan_distance_for_piece(a, b);
-           // println!("{}", manatthan_distance_for_piece(a, b))
         }
     }
     

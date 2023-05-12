@@ -1,12 +1,5 @@
-use std::{fs::File, io::Read};
 
-fn read_file(path: &String, buffer: &mut String) -> std::io::Result<()> {
-	let mut file: File = File::open(path).expect("Open file.");
-	file.read_to_string(buffer).expect("Read to string.");
-	Ok(())
-}
-
-fn _extract_puzzle(buffer: String) -> Vec<usize> {
+fn extract_puzzle(buffer: String) -> std::io::Result<Vec<usize>> {
 	let mut puzzle: Vec<usize> = Vec::new();
 	let mut piece : String = String::new();
 
@@ -28,7 +21,7 @@ fn _extract_puzzle(buffer: String) -> Vec<usize> {
 			piece.clear();
 		}
 	}
-	puzzle
+	Ok(puzzle)
 }
 
 fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
@@ -54,14 +47,12 @@ fn is_valid_puzzle(puzzle: &Vec<usize>) -> bool {
 }
 
 pub fn parsing(path: &String) -> std::io::Result<(usize, Vec<usize>)> {
-	let mut buffer: String = String::new();
-	read_file(path, &mut buffer)?;
+	let buffer: String = std::fs::read_to_string(path)?;
+	let puzzle: Vec<usize> = extract_puzzle(buffer)?;
 
-	let _puzzle: Vec<usize> = _extract_puzzle(buffer);
-
-	if !is_valid_puzzle(&_puzzle) {
+	if !is_valid_puzzle(&puzzle) {
 		panic!("Parsing: Invalid.");
 	}
 
-	Ok((_puzzle[0], _puzzle[1..].to_vec()))
+	Ok((puzzle[0], puzzle[1..].to_vec()))
 }
