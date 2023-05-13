@@ -1,13 +1,28 @@
 pub mod position;
+pub mod _move;
 
 use position::Position;
+pub use _move::Move;
+use std::{hash::{Hash, Hasher}, collections::hash_map::DefaultHasher};
 use position::Vector2D;
 use std::fmt;
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, Eq, Clone)]
 pub struct Board {
     pub size: usize,
     pub value: Vec<usize>,
+}
+
+impl Hash for Board {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.value.hash(state)
+    }
+}
+
+impl PartialEq for Board {
+    fn eq(&self, other: &Self) -> bool {
+        self.value == other.value
+    }
 }
 
 impl std::ops::Index<usize> for Board {
@@ -37,6 +52,12 @@ impl std::ops::IndexMut<Position> for Board {
 
 impl Board {
 
+    pub fn get_hash(&self) -> u64 {
+        let mut hasher = DefaultHasher::new();
+        self.value.hash(&mut hasher);
+        hasher.finish()
+    }
+
     pub fn new(size: usize, pieces: Vec<usize>) -> Board {
         if size * size != pieces.len() {
             panic!("Can't creat new board: len vector: {} size: {size}", pieces.len());
@@ -52,15 +73,6 @@ impl Board {
         }
 
         board
-    }
-
-    pub fn get_hash(&self) -> String {
-        let mut hash: String = String::new();
-        for x in &self.value {
-            let tmp = x.to_string();
-            hash.push_str(&tmp);
-        }
-        hash
     }
 
     pub fn position_to_index(&self, position: Position) -> usize {
@@ -95,34 +107,34 @@ impl Board {
         self.value.swap(piece_index, hole_index);
     }
 
-    fn _find_adjacent_index(&self, index: usize) -> Vec<usize> {
+    fn _find_adjacent_index(&self, index: usize) -> Vec<(usize, Move)> {
         let mut adjacent = Vec::new();
         let size = self.size;
 
         if index + size < size * size { //bottom
-            adjacent.push(index + size);
+            adjacent.push((index + size, Move::Down));
         }
         if index >= size { //top
-            adjacent.push(index - size);
+            adjacent.push((index - size, Move::Up));
         }
         if index % size != 0 { //left
-            adjacent.push(index - 1);
+            adjacent.push((index - 1, Move::Left));
         }
         if (index + 1) % size != 0 { //right
-            adjacent.push(index + 1);
+            adjacent.push((index + 1, Move::Right));
         }
         adjacent
     }
 
-    pub fn _derive(&self) -> Vec<Board> {
+    pub fn _derive(&self) -> Vec<(Board, Move)> {
         let (_, hole_index) = self._find_id(0).expect("Missing hole");
         let mut derived = Vec::new();
         let adjacent_piece = self._find_adjacent_index(hole_index);
 
-        for adjacent_index in adjacent_piece.iter(){
+        for (adjacent_index, _move) in adjacent_piece {
             let mut new_board = self.clone();
-            new_board._move_piece(*adjacent_index, hole_index);
-            derived.push(new_board);
+            new_board._move_piece(adjacent_index, hole_index);
+            derived.push((new_board, _move));
         }
         derived
     }
