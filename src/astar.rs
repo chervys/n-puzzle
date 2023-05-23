@@ -37,7 +37,7 @@ impl PartialOrd for Path {
 }
 
 impl Path {
-    pub fn new(current_board: &Board, board_final: &Board) -> Path {
+    pub fn _new(current_board: &Board, board_final: &Board) -> Path {
         let mut path = Path {
             board: current_board.clone(),
             edges: Vec::new(),
