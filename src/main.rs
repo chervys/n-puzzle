@@ -17,10 +17,10 @@ fn main() {
 			let final_board = board::final_board(&initial_board);
 
 			println!("initial_board:");
-			println!("{}", initial_board);
+			println!("{initial_board}");
 
 			println!("final_board:");
-			println!("{}", final_board);
+			println!("{final_board}");
 
 			//println!("{}", heuristic::manatthan_distance(&initial_board, &final_board));
 
