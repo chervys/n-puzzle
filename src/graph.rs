@@ -7,9 +7,12 @@ pub struct Node {
 }
 
 impl Node {
-
     pub fn new(board: Board) -> Node {
-        Self { board, edges: Vec::new(), parent: usize::MAX }
+        Self {
+            board,
+            edges: Vec::new(),
+            parent: usize::MAX,
+        }
     }
 
     pub fn _add_edge(&mut self, index: usize) {
@@ -20,7 +23,11 @@ impl Node {
         let mut new_nodes = Vec::new();
 
         for board in self.board._derive() {
-            new_nodes.push(Node{ board, edges:Vec::new(), parent });
+            new_nodes.push(Node {
+                board,
+                edges: Vec::new(),
+                parent,
+            });
         }
         new_nodes
     }
@@ -38,17 +45,14 @@ impl std::ops::Index<usize> for Graph {
     }
 }
 impl std::ops::IndexMut<usize> for Graph {
-    fn index_mut(&mut self, i: usize) -> & mut Self::Output {
+    fn index_mut(&mut self, i: usize) -> &mut Self::Output {
         &mut self.nodes[i]
     }
 }
 
 impl Graph {
-
     pub fn new(board: Board) -> Graph {
-        let mut graph = Graph {
-            nodes: Vec::new(),
-        };
+        let mut graph = Graph { nodes: Vec::new() };
         graph.add_node(Node::new(board));
         graph
     }

@@ -25,21 +25,23 @@ impl std::ops::Index<Position> for Board {
     }
 }
 impl std::ops::IndexMut<usize> for Board {
-    fn index_mut(&mut self, i: usize) -> & mut Self::Output {
+    fn index_mut(&mut self, i: usize) -> &mut Self::Output {
         &mut self.value[i]
     }
 }
 impl std::ops::IndexMut<Position> for Board {
-    fn index_mut(&mut self, i: Position) -> & mut Self::Output {
+    fn index_mut(&mut self, i: Position) -> &mut Self::Output {
         &mut self.value[Self::position_to_index_from_size(self.size, i)]
     }
 }
 
 impl Board {
-
     pub fn new(size: usize, pieces: Vec<usize>) -> Board {
         if size * size != pieces.len() {
-            panic!("Can't creat new board: len vector: {} size: {size}", pieces.len());
+            panic!(
+                "Can't creat new board: len vector: {} size: {size}",
+                pieces.len()
+            );
         }
 
         let mut board = Board {
@@ -87,7 +89,7 @@ impl Board {
         None
     }
 
-    pub fn id_to_position(&self, id:usize) -> Option<Position> {
+    pub fn id_to_position(&self, id: usize) -> Option<Position> {
         match self.value.iter().position(|e| *e == id) {
             Some(index) => Some(self._index_to_position(index)),
             None => None,
@@ -102,16 +104,20 @@ impl Board {
         let mut adjacent = Vec::new();
         let size = self.size;
 
-        if index + size < size * size { //bottom
+        if index + size < size * size {
+            //bottom
             adjacent.push(index + size);
         }
-        if index >= size { //top
+        if index >= size {
+            //top
             adjacent.push(index - size);
         }
-        if index % size != 0 { //left
+        if index % size != 0 {
+            //left
             adjacent.push(index - 1);
         }
-        if (index + 1) % size != 0 { //right
+        if (index + 1) % size != 0 {
+            //right
             adjacent.push(index + 1);
         }
         adjacent
@@ -122,7 +128,7 @@ impl Board {
         let mut derived = Vec::new();
         let adjacent_piece = self._find_adjacent_index(hole_index);
 
-        for adjacent_index in adjacent_piece.iter(){
+        for adjacent_index in adjacent_piece.iter() {
             let mut new_board = self.clone();
             new_board._move_piece(*adjacent_index, hole_index);
             derived.push(new_board);
@@ -132,18 +138,17 @@ impl Board {
 
     pub fn out_of_bound(&self, position: Position) -> bool {
         if position.x > self.size - 1 || position.y > self.size - 1 {
-            return true
+            return true;
         }
         false
     }
 
     pub fn assigned(&self, position: Position) -> bool {
         if self.value[self.position_to_index(position)] != 0 {
-            return true
+            return true;
         }
         false
     }
-
 }
 
 impl fmt::Display for Board {
@@ -159,7 +164,7 @@ impl fmt::Display for Board {
 }
 
 pub fn blank_board(size: usize) -> Board {
-    let mut board = Board { 
+    let mut board = Board {
         value: Vec::new(),
         size,
     };
@@ -172,14 +177,16 @@ pub fn blank_board(size: usize) -> Board {
 }
 
 pub fn final_board(board: &Board) -> Board {
-    let mut direction = Vector2D{x: 1, y: 0};
-    let mut cursor = Position{x: 0, y: 0};
+    let mut direction = Vector2D { x: 1, y: 0 };
+    let mut cursor = Position { x: 0, y: 0 };
     let mut final_board = blank_board(board.size);
 
     if board.size >= 1 {
         final_board[cursor] = 1;
         for i in 2..(board.size * board.size) {
-            if final_board.out_of_bound(cursor + direction) || final_board.assigned(cursor + direction) {
+            if final_board.out_of_bound(cursor + direction)
+                || final_board.assigned(cursor + direction)
+            {
                 direction._rotate_right(); // rotate cursor
             }
             cursor = cursor + direction; // move cursor
