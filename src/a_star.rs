@@ -118,8 +118,6 @@ pub fn a_star(board: Board) {
                     }
                     continue;},
                 None => {_backup.insert(path.board.get_hash(), path.heuristic);
-                    // println!("F({}) = G({}) + H({})", path.cost, path.distance, path.heuristic);
-                    // println!("{}", path.board);
                 }
             }
             paths.push(path);

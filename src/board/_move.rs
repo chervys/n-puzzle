@@ -16,7 +16,7 @@ impl Move {
         }
     }
 
-    pub fn is_opposit(&self, move_: Move) -> bool { //todo Optimise
+    pub fn is_opposit(&self, move_: Move) -> bool {
         *self == move_.opposit()
     }
 }
